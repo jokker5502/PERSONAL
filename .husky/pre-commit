@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# Cargar entorno NVM
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# 1. Aplicar formato, organizar imports y fixes completos con Biome
+npx @biomejs/biome check --fix --unsafe . || exit 1
+
+# 2. Agregar cambios al staging
+git add . || exit 1
+
+# 3. Verificar tipos con TypeScript
+npm run ts || exit 1
+
+# 4. Verificar si hay archivos vacíos en staging
+empty_files=$(git diff --cached --name-only | while read file; do
+  if [ -f "$file" ] && [ ! -s "$file" ]; then
+    echo "$file"
+  fi
+done)
+
+if [ ! -z "$empty_files" ]; then
+  echo "❌ Commit bloqueado: Hay archivos vacíos:"
+  echo "$empty_files"
+  exit 1
+fi

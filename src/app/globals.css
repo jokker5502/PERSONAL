@@ -1,0 +1,304 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+	--radius: 0.657rem;
+
+	/* ======= COLORES DE FONDO - LIGHT MODE ======= */
+	/* Fondo principal de la aplicación */
+	--background: #fff7f9;
+	/* Fondo card secction*/
+
+	/* Fondo para tarjetas y elementos elevados */
+	--card: #fff7f9;
+	/* Fondo para elementos popup y tooltips */
+	--popover: #ffffff;
+	/* Fondo para la barra lateral */
+	--sidebar: #ffffff;
+
+	/* ======= COLORES DE TEXTO - LIGHT MODE ======= */
+	/* Texto principal */
+	--foreground: #181818;
+	/* Texto en tarjetas */
+	--card-foreground: #181818;
+	/* Texto en popovers */
+	--popover-foreground: #181818;
+	/* Texto secundario y de menor énfasis */
+	--muted-foreground: #343434;
+	/* Texto en elementos de la barra lateral */
+	--sidebar-foreground: #181818;
+
+	/* ======= COLORES DE ACENTO - LIGHT MODE ======= */
+	/* Color principal para botones y acciones importantes */
+	--primary: #ff8e06;
+	--primary-foreground: #000000;
+
+	/* Color secundario para elementos menos prominentes */
+	--secondary: #fec16f;
+	--secondary-foreground: #181818;
+
+	/* Colores para elementos sutiles o desenfocados */
+	--muted: #fda936;
+
+	/* Colores para elementos destacados o interactivos */
+	--accent: #fda936;
+	--accent-foreground: #181818;
+
+	/* Colores para la barra lateral */
+	--sidebar-primary: #ff8e06;
+	--sidebar-primary-foreground: #000000;
+	--sidebar-accent: #fda936;
+	--sidebar-accent-foreground: #181818;
+	--sidebar-border: #343434;
+	--sidebar-ring: #8b0414;
+
+	/* ======= COLORES UTILITARIOS - LIGHT MODE ======= */
+	/* Color para acciones destructivas o errores */
+	--destructive: #b90221;
+
+	/* Colores para bordes y campos de entrada */
+	--border: #4d4d4d;
+	--input: #4d4d4d;
+
+	/* Color para efectos de focus o selección */
+	--ring: #8b0414;
+
+	/* ======= COLORES PARA GRÁFICOS - LIGHT MODE ======= */
+	--chart-1: #fec16f;
+	--chart-2: #b90221;
+	--chart-3: #ff8e06;
+	--chart-4: #f2022b;
+	--chart-5: #8b0414;
+
+	/* ======= COMPONENTE CATEGORY ======= */
+	--category-default: #a8a8a8;
+	--category-selected: #b90221;
+	--category-text: #343434;
+
+	/* Typekit Fonts */
+	--font-display: "font-display", sans-serif;
+	--font-body: "font-body", sans-serif;
+}
+
+.dark {
+	/* ======= COLORES DE FONDO - DARK MODE ======= */
+	/* Fondo principal de la aplicación */
+	--background: #181818;
+	/* Fondo para tarjetas y elementos elevados */
+
+	--card: #202020;
+	/* Fondo para elementos popup y tooltips */
+	--popover: #202020;
+	/* Fondo para la barra lateral */
+	--sidebar: #202020;
+
+	/* ======= COLORES DE TEXTO - DARK MODE ======= */
+	/* Texto principal */
+	--foreground: #fefefe;
+	/* Texto en tarjetas */
+	--card-foreground: #fefefe;
+	/* Texto en popovers */
+	--popover-foreground: #fefefe;
+	/* Texto secundario y de menor énfasis */
+	--muted-foreground: #fda936;
+	/* Texto en elementos de la barra lateral */
+	--sidebar-foreground: #fefefe;
+
+	/* ======= COLORES DE ACENTO - DARK MODE ======= */
+	/* Color principal para botones y acciones importantes */
+	--primary: #fec16f;
+	--primary-foreground: #181818;
+
+	/* Color secundario para elementos menos prominentes */
+	--secondary: #fda936;
+	--secondary-foreground: #000000;
+
+	/* Colores para elementos sutiles o desenfocados */
+	--muted: #343434;
+
+	/* Colores para elementos destacados o interactivos */
+	--accent: #8b0414;
+	--accent-foreground: #000000;
+
+	/* Colores para la barra lateral */
+	--sidebar-primary: #ff8e06;
+	--sidebar-primary-foreground: #000000;
+	--sidebar-accent: #fda936;
+	--sidebar-accent-foreground: #181818;
+	--sidebar-border: #343434;
+	--sidebar-ring: #8b0414;
+
+	/* ======= COLORES UTILITARIOS - DARK MODE ======= */
+	/* Color para acciones destructivas o errores */
+	--destructive: #f2022b;
+
+	/* Colores para bordes y campos de entrada */
+	--border: #202020;
+	--input: #343434;
+
+	/* Color para efectos de focus o selección */
+	--ring: #8b0414;
+
+	/* ======= COLORES PARA GRÁFICOS - DARK MODE ======= */
+	--chart-1: #fda936;
+	--chart-2: #b90221;
+	--chart-3: #ff8e06;
+	--chart-4: #f2022b;
+	--chart-5: #8b0414;
+
+	/* ======= BOTONES DARK MODE ======= */
+	/* Botón básico primario */
+	--button-primary: #8b0414;
+	--button-primary-hover: #f2022b;
+	--button-primary-text: #fff7f9;
+
+	/* Botón básico secundario */
+	--button-secondary: #181818;
+	--button-secondary-hover: #202020;
+	--button-secondary-text: #ff8e06;
+
+	/* ======= COMPONENTE CATEGORY ======= */
+	--category-default: #343434;
+	--category-selected: #b90221;
+	--category-text: #d1d1d1;
+}
+
+@font-face {
+	font-family: "font-display";
+	src: url("https://use.typekit.net/fgg0hph.css");
+}
+
+@font-face {
+	font-family: "font-body";
+	src: url("https://use.typekit.net/fgg0hph.css");
+}
+
+.font-display {
+	font-family: var(--font-display);
+}
+
+.font-body {
+	font-family: var(--font-body);
+}
+
+@theme inline {
+	--radius-sm: calc(var(--radius) - 8px);
+	--radius-md: calc(var(--radius) - 2px);
+	--radius-lg: var(--radius);
+	--radius-xl: calc(var(--radius) + 4px);
+
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-destructive: var(--destructive);
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-ring: var(--ring);
+	--color-chart-1: var(--chart-1);
+	--color-chart-2: var(--chart-2);
+	--color-chart-3: var(--chart-3);
+	--color-chart-4: var(--chart-4);
+	--color-chart-5: var(--chart-5);
+	--color-sidebar: var(--sidebar);
+	--color-sidebar-foreground: var(--sidebar-foreground);
+	--color-sidebar-primary: var(--sidebar-primary);
+	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+	--color-sidebar-accent: var(--sidebar-accent);
+	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+	--color-sidebar-border: var(--sidebar-border);
+	--color-sidebar-ring: var(--sidebar-ring);
+
+	/* Nuevas variables para botones dark mode */
+	--color-button-primary: var(--button-primary);
+	--color-button-primary-hover: var(--button-primary-hover);
+	--color-button-primary-text: var(--button-primary-text);
+	--color-button-secondary: var(--button-secondary);
+	--color-button-secondary-hover: var(--button-secondary-hover);
+	--color-button-secondary-text: var(--button-secondary-text);
+
+	/* Nuevas variables para componente Category */
+	--color-category-default: var(--category-default);
+	--color-category-selected: var(--category-selected);
+	--color-category-text: var(--category-text);
+}
+
+@layer base {
+	* {
+		@apply border-border outline-ring/50;
+	}
+
+	body {
+		@apply bg-background text-foreground;
+	}
+
+	/* Estilos para botones en dark mode */
+	.dark .btn-primary {
+		background-color: var(--button-primary);
+		color: var(--button-primary-text);
+	}
+
+	.dark .btn-primary:hover {
+		background-color: var(--button-primary-hover);
+	}
+
+	.dark .btn-secondary {
+		background-color: var(--button-secondary);
+		color: var(--button-secondary-text);
+	}
+
+	.dark .btn-secondary:hover {
+		background-color: var(--button-secondary-hover);
+	}
+
+	/* Estilos para componente Category */
+	.dark .category {
+		background-color: var(--category-default);
+		color: var(--category-text);
+	}
+
+	.dark .category.selected {
+		background-color: var(--category-selected);
+	}
+}
+
+/* Clases de utilidad para aplicar los estilos directamente */
+.dark-btn-primary {
+	background-color: #8b0414;
+	color: #fff7f9;
+	transition: background-color 0.2s ease;
+}
+
+.dark-btn-primary:hover {
+	background-color: #f2022b;
+}
+
+.dark-btn-secondary {
+	background-color: #181818;
+	color: #ff8e06;
+	transition: background-color 0.2s ease;
+}
+
+.dark-btn-secondary:hover {
+	background-color: #202020;
+}
+
+.category-item {
+	background-color: #343434;
+	color: #d1d1d1;
+}
+
+.category-item.selected {
+	background-color: #8b0414;
+}
