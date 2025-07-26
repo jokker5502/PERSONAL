@@ -1,3 +1,5 @@
+// src/app/layout.tsx (CÓDIGO CORREGIDO)
+
 import MenuBarMobile from '@/components/menuBar/menuBarMobile'
 import MenuTopMobile from '@/components/menuTopMobile/menuTopMobile'
 import { ThemeProvider } from '@/components/theme-provider'
@@ -17,7 +19,6 @@ export const metadata: Metadata = {
 	metadataBase: new URL('https://ikarusapp.com/'),
 }
 
-// Configuración del viewport (Next.js 13.2+)
 export const viewport: Viewport = {
 	themeColor: [
 		{ media: '(prefers-color-scheme: light)', color: '#ffffff' },
@@ -44,13 +45,15 @@ export default function RootLayout({
 			storageKey="ikarus-theme"
 		>
 			<AuthProvider>
-				<div className="flex flex-col min-h-screen  via-white to-indigo-50 dark:from-black dark:via-neutral-900 dark:to-neutral-800">
-					{/* Menu superior con logo */}
+				<div className="flex flex-col min-h-screen">
+					{/* Menu superior con posición fija/sticky */}
 					<MenuTopMobile variant="sticky" />
 
-					<div className="flex-1 pb-16  via-white to-indigo-50 dark:from-black dark:via-neutral-900 dark:to-neutral-800">
-						{children}
-					</div>
+					{/* --- ¡AQUÍ ESTÁ LA SOLUCIÓN! --- */}
+					{/* Añadimos pt-16 para el menú de arriba y pb-20 para el de abajo */}
+					<main className="flex-1 pt-16 pb-20">{children}</main>
+
+					{/* Menú inferior que también es fijo */}
 					<MenuBarMobile />
 				</div>
 			</AuthProvider>
