@@ -103,9 +103,10 @@ export default function Home() {
 							variants={containerVariants}
 							className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl"
 						>
-							{/* --- CAMBIO 1: RUTA CORREGIDA --- */}
+							{/* --- ¡AQUÍ ESTÁ LA CORRECCIÓN! --- */}
+							{/* El Link ahora apunta a la ruta correcta del formulario del cliente */}
 							<motion.div variants={cardVariants}>
-								<Link href="/trips">
+								<Link href="/formOrder/PackageInformation">
 									<div className="group relative p-8 h-full w-full bg-card/80 backdrop-blur-sm rounded-2xl border border-border/20 shadow-lg hover:border-primary/50 transition-all duration-300 cursor-pointer overflow-hidden">
 										<div className="flex flex-col items-start gap-4">
 											<div className="p-3 bg-primary/10 rounded-full">
@@ -127,9 +128,9 @@ export default function Home() {
 								</Link>
 							</motion.div>
 
-							{/* El botón de transportar apunta a /trips */}
+							{/* El botón de transportar apunta a /trips, lo cual es correcto para el courier */}
 							<motion.div variants={cardVariants}>
-								<Link href="/fromOrder/packageInformation">
+								<Link href="/trips">
 									<div className="group relative p-8 h-full w-full bg-card/80 backdrop-blur-sm rounded-2xl border border-border/20 shadow-lg hover:border-primary/50 transition-all duration-300 cursor-pointer overflow-hidden">
 										<div className="flex flex-col items-start gap-4">
 											<div className="p-3 bg-primary/10 rounded-full">
@@ -152,7 +153,6 @@ export default function Home() {
 							</motion.div>
 						</motion.div>
 
-						{/* --- CAMBIO 2: NUEVO BOTÓN AÑADIDO --- */}
 						<motion.div variants={cardVariants}>
 							<Link href="/my-packages">
 								<Button
