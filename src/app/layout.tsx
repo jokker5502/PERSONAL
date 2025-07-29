@@ -108,7 +108,7 @@ export default function RootLayout({
 						storageKey="ikarus-theme"
 					>
 						<AuthProvider>
-							<div className="relative flex flex-col min-h-screen">
+							<div className=" relative flex flex-col min-h-screen">
 								<main>{children}</main>
 							</div>
 						</AuthProvider>

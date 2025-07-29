@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 
 const LoginPage = () => {
 	useEffect(() => {
-		document.title = 'Ikarus | '
+		document.title = 'Ikarus - Login'
 	}, [])
 
 	return (

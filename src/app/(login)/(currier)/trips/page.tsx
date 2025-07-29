@@ -1,4 +1,3 @@
-
 'use client'
 
 import { cn } from '@/lib/utils'
@@ -46,6 +45,8 @@ const mockPackages: PackageDetails[] = [
 	},
 ]
 
+// Los hooks de tema ya están disponibles globalmente
+
 // Componente de tarjeta de encabezado
 const HeaderCard = ({
 	children,
@@ -57,7 +58,7 @@ const HeaderCard = ({
 	return (
 		<div
 			className={cn(
-				'bg-gray-900 text-white rounded-2xl shadow-md', // Un fondo oscuro para el encabezado crea un contraste fuerte y elegante
+				'bg-card text-card-foreground rounded-2xl shadow-md border border-sidebar-border',
 				className
 			)}
 		>
@@ -66,13 +67,15 @@ const HeaderCard = ({
 	)
 }
 
-// Tarjeta de paquete, rediseñada para el tema claro
 const PackageCard = ({ item }: { item: PackageDetails }) => {
-	// Paletas de colores para los estados, adaptadas a un fondo claro
+	// Paletas de colores para los estados usando las variables del tema
 	const statusStyles = {
-		por_recoger: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-		en_camino: 'bg-sky-100 text-sky-800 border-sky-200',
-		entregado: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+		por_recoger:
+			'bg-chart-1/20 text-chart-1 border-chart-1/30 dark:bg-chart-1/10 dark:text-chart-1 dark:border-chart-1/20',
+		en_camino:
+			'bg-primary/20 text-primary border-primary/30 dark:bg-primary/10 dark:text-primary dark:border-primary/20',
+		entregado:
+			'bg-chart-5/20 text-chart-5 border-chart-5/30 dark:bg-chart-5/10 dark:text-chart-5 dark:border-chart-5/20',
 	}
 
 	const statusText = {
@@ -83,8 +86,7 @@ const PackageCard = ({ item }: { item: PackageDetails }) => {
 
 	return (
 		<motion.div
-			// Tarjeta blanca con borde negro sutil
-			className="bg-white border border-gray-900/10 rounded-2xl p-5 space-y-4 group transition-all duration-300 hover:border-gray-900/40 hover:shadow-lg"
+			className="bg-card border border-border rounded-2xl p-5 space-y-4 group transition-all duration-300 hover:border-ring/40 hover:shadow-lg dark:hover:shadow-xl dark:hover:shadow-ring/10"
 			whileHover={{ scale: 1.02 }}
 			initial={{ opacity: 0, y: 20 }}
 			animate={{ opacity: 1, y: 0 }}
@@ -92,28 +94,29 @@ const PackageCard = ({ item }: { item: PackageDetails }) => {
 		>
 			<div className="flex justify-between items-start">
 				<div className="flex items-center gap-3">
-					{/* Icono ahora en el color primario de la marca (rojo) */}
-					<Package className="h-5 w-5 text-red-600" />
-					<h3 className="font-bold text-lg text-gray-900">{item.title}</h3>
+					<Package className="h-5 w-5 text-primary" />
+					<h3 className="font-bold text-lg text-card-foreground">
+						{item.title}
+					</h3>
 				</div>
-				<div className="flex items-center gap-1 text-emerald-600 font-bold">
+				<div className="flex items-center gap-1 text-chart-5 font-bold">
 					<DollarSign size={16} />
 					<span>{item.payout.toFixed(2)}</span>
 				</div>
 			</div>
 
-			<div className="flex items-center gap-3 text-gray-600">
+			<div className="flex items-center gap-3 text-muted-foreground">
 				<MapPin size={18} />
 				<span className="font-medium">{item.origin}</span>
-				<div className="flex-grow border-t-2 border-dashed border-gray-300"></div>
+				<div className="flex-grow border-t-2 border-dashed border-border"></div>
 				<Plane size={18} />
-				<div className="flex-grow border-t-2 border-dashed border-gray-300"></div>
+				<div className="flex-grow border-t-2 border-dashed border-border"></div>
 				<MapPin size={18} />
 				<span className="font-medium">{item.destination}</span>
 			</div>
 
-			<div className="flex justify-between items-center border-t border-gray-200 pt-4">
-				<div className="flex items-center gap-2 text-sm text-gray-500">
+			<div className="flex justify-between items-center border-t border-border pt-4">
+				<div className="flex items-center gap-2 text-sm text-muted-foreground">
 					<Calendar size={16} />
 					<span>{item.pickupDate}</span>
 				</div>
@@ -130,7 +133,8 @@ const PackageCard = ({ item }: { item: PackageDetails }) => {
 	)
 }
 
-// Página Principal
+// El toggle de modo oscuro se maneja globalmente
+
 export default function TripsPage() {
 	const [packages, setPackages] = useState<PackageDetails[]>([])
 
@@ -141,18 +145,17 @@ export default function TripsPage() {
 	}, [])
 
 	return (
-		// Fondo principal ahora es un gris muy claro, más suave que el blanco puro
-		<div className="bg-gray-50 font-sans">
+		<div className="min-h-screen bg-background font-sans">
 			<div className="py-8 px-4 sm:px-6 space-y-6">
-				{/* Filtros con estilo adaptado al tema claro */}
+				{/* Filtros con clases de Tailwind que usan las variables CSS */}
 				<div className="flex space-x-2">
-					<button className="bg-red-600 rounded-full px-5 py-2 text-sm font-semibold text-white shadow-sm">
+					<button className="bg-primary text-primary-foreground rounded-full px-5 py-2 text-sm font-semibold shadow-sm hover:bg-primary/90 transition-colors">
 						Viajes
 					</button>
-					<button className="bg-white border border-gray-300 rounded-full px-5 py-2 text-sm text-gray-600 font-medium">
+					<button className="bg-card border border-border text-muted-foreground rounded-full px-5 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors">
 						Historial
 					</button>
-					<button className="bg-white border border-gray-300 rounded-full px-5 py-2 text-sm text-gray-600 font-medium">
+					<button className="bg-card border border-border text-muted-foreground rounded-full px-5 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors">
 						Ganancias
 					</button>
 				</div>
@@ -160,13 +163,15 @@ export default function TripsPage() {
 				<HeaderCard>
 					<div className="flex justify-between items-center">
 						<div>
-							<h2 className="text-2xl font-bold">Tus Envíos Activos</h2>
-							<p className="text-white/70">
+							<h2 className="text-2xl font-bold text-card-foreground">
+								Tus Envíos Activos
+							</h2>
+							<p className="text-muted-foreground">
 								Paquetes que aceptaste transportar.
 							</p>
 						</div>
-						<div className="bg-white/20 p-3 rounded-full">
-							<Package className="h-6 w-6 text-white" />
+						<div className="bg-primary/20 p-3 rounded-full">
+							<Package className="h-6 w-6 text-primary" />
 						</div>
 					</div>
 				</HeaderCard>

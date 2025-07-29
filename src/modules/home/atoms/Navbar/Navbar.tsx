@@ -14,7 +14,7 @@ const Navbar = () => {
 	const [isOpen, setIsOpen] = useState(false)
 
 	return (
-		<nav className="fixed top-0 left-0 w-full z-50 px-6">
+		<nav className="fixed top-0 left-0 w-full z-50 px-6 backdrop-blur-xl bg-background/70 shadow-lg supports-[backdrop-filter]:bg-background/60">
 			<div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
 				{/* Logo */}
 				<FarshLogoSVG className="h-10 w-30 lg:h-10 lg:w-50" />

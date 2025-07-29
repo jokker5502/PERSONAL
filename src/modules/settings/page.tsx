@@ -29,7 +29,7 @@ const SettingsPage: React.FC = () => {
 	]
 
 	return (
-		<div className="container mx-auto p-4 mt-10 gap-y-2  items-center">
+		<div className="container mx-auto p-4 gap-y-2  items-center">
 			{/* Sección de foto de perfil */}
 			<div
 				className="flex items-center gap-4 my-10 p-4 rounded-2xl 
