@@ -107,7 +107,7 @@
 
 	/* ======= COLORES DE ACENTO - DARK MODE ======= */
 	/* Color principal para botones y acciones importantes */
-	--primary: #fec16f;
+	--primary: #6f71fe;
 	--primary-foreground: #181818;
 
 	/* Color secundario para elementos menos prominentes */
@@ -286,7 +286,7 @@
 
 .dark-btn-secondary {
 	background-color: #181818;
-	color: #ff8e06;
+	color: #bb741d;
 	transition: background-color 0.2s ease;
 }
 
