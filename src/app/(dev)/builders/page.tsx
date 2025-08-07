@@ -141,7 +141,7 @@ export default function HomePage() {
 						Variantes principales
 					</h3>
 					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-						<Button>Botón Default</Button>
+						<Button variant="link">Botón Default</Button>
 						<Button variant="destructive">Eliminar</Button>
 						<Button variant="secondary">Secundario</Button>
 						<Button variant="outline">Con Borde</Button>
@@ -236,7 +236,7 @@ export default function HomePage() {
 						<Button variant="ghost" size="sm">
 							Contacto
 						</Button>
-						<Button variant="secondary" size="sm">
+						<Button variant="link" size="sm">
 							Iniciar sesión
 						</Button>
 					</div>

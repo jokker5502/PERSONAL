@@ -1,5 +1,3 @@
-// src/app/(login)/(currier)/trips/page.tsx
-
 'use client'
 
 import { cn } from '@/lib/utils'
@@ -15,7 +13,6 @@ import {
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
-// El "contrato" de datos que el backend debe seguir
 interface PackageDetails {
 	id: string
 	title: string
@@ -25,9 +22,6 @@ interface PackageDetails {
 	status: 'por_recoger' | 'en_camino' | 'entregado'
 	payout: number
 }
-
-// --- COMPONENTES REUTILIZABLES ---
-// He creado componentes pequeños y enfocados para cada parte de la UI.
 
 const HeaderCard = ({
 	title,
@@ -115,7 +109,6 @@ const EmptyState = () => (
 	</div>
 )
 
-// --- PÁGINA PRINCIPAL ---
 export default function TripsPage() {
 	const [packages, _setPackages] = useState<PackageDetails[]>([])
 	const [isLoading, setIsLoading] = useState(true)
@@ -140,7 +133,6 @@ export default function TripsPage() {
 	}, [])
 
 	return (
-		// El div principal ya no tiene 'bg-gray-50'. Hereda el color del layout.
 		<div className="py-8 px-4 sm:px-6 space-y-6">
 			<HeaderCard
 				title="Tus Envíos Activos"

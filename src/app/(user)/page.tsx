@@ -90,13 +90,13 @@ export default function LandingPage() {
 							className="flex flex-col sm:flex-row gap-4"
 						>
 							<Link href="/login">
-								<Button size="lg" className="bg-primary hover:bg-primary/90">
+								<Button size="lg" variant="link">
 									Iniciar Sesión
 									<ArrowRight className="h-4 w-4 ml-2" />
 								</Button>
 							</Link>
 							<Link href="/about-us">
-								<Button size="lg" variant="ghost">
+								<Button size="lg" variant="link">
 									Conoce más
 								</Button>
 							</Link>

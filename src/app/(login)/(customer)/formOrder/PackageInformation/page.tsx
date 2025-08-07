@@ -1,32 +1,27 @@
-// src/app/(customer)/formOrder/PackageInformation/page.tsx
-
 'use client'
 
 import { Button } from '@/components/ui/button'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowLeft, ChevronDown, Info, Plus, Star } from 'lucide-react'
 import Image from 'next/image'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 
-// El estado inicial del formulario que el backend necesitará
 const initialFormData = {
 	productName: '',
 	productLink: '',
 	unitValue: '',
-	quantity: 1,
-	category: '',
-	needsBox: true,
-	weightOver5kg: null,
-	sizeOver50cm: null,
-	multipleUnits: null,
-	senderType: '',
+	quantity: '1',
+
+	weightOver5kg: null as boolean | null,
+	sizeOver50cm: null as boolean | null,
 	deliveryMethod: '',
-	selectedCourierId: null,
 }
 
-// --- COMPONENTES UI REUTILIZABLES ---
-// Pequeños componentes que construyen la UI del formulario.
-// Usan variables de `globals.css` para el modo claro/oscuro.
+type FormDataState = typeof initialFormData
+
+type FormErrors = {
+	[key in keyof FormDataState]?: string
+}
 
 const ProgressBar = ({ step }: { step: number }) => {
 	const progressPercentage = ((step - 1) / 2) * 100
@@ -58,11 +53,19 @@ const FormLabel = ({ children }: { children: React.ReactNode }) => (
 	</label>
 )
 
-const FormInput = (props: React.InputHTMLAttributes<HTMLInputElement>) => (
-	<input
-		{...props}
-		className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-primary focus:border-primary transition text-foreground"
-	/>
+const FormInput = ({
+	error,
+	...props
+}: React.InputHTMLAttributes<HTMLInputElement> & { error?: string }) => (
+	<div>
+		<input
+			{...props}
+			className={`w-full px-4 py-2 bg-background border rounded-lg focus:ring-primary focus:border-primary transition text-foreground ${
+				error ? 'border-destructive ring-destructive' : 'border-border'
+			}`}
+		/>
+		{error && <p className="mt-1 text-sm text-destructive">{error}</p>}
+	</div>
 )
 
 const InfoBox = ({ children }: { children: React.ReactNode }) => (
@@ -72,123 +75,152 @@ const InfoBox = ({ children }: { children: React.ReactNode }) => (
 	</div>
 )
 
-// --- COMPONENTES PARA CADA PASO DEL FORMULARIO ---
+interface StepProps {
+	formData: FormDataState
+	setFormData: Dispatch<SetStateAction<FormDataState>>
+	errors: FormErrors
+}
 
-const Step1 = ({ onNext }: { onNext: () => void }) => (
-	<div className="space-y-6">
-		<FormCard title="¿De qué ciudad traemos tus pedidos?">
-			<div className="space-y-3">
-				<div className="w-full px-4 py-3 bg-input border rounded-lg flex justify-between items-center text-muted-foreground cursor-pointer">
-					<span>Selecciona el lugar</span>
-					<ChevronDown className="h-5 w-5" />
-				</div>
-				<div className="w-full px-4 py-3 bg-input border rounded-lg flex justify-between items-center text-muted-foreground cursor-pointer">
-					<span>Selecciona una ciudad</span>
-					<ChevronDown className="h-5 w-5" />
-				</div>
-			</div>
-		</FormCard>
+const Step1 = ({ formData, setFormData, errors }: StepProps) => {
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = e.target
+		setFormData((prev) => ({ ...prev, [name]: value }))
+	}
 
-		<FormCard title="Adquiere y especifica tu producto">
-			<div className="space-y-4">
-				<div>
-					<FormLabel>¿Qué quieres comprar?</FormLabel>
-					<FormInput placeholder="Ej. Apple MacBook Pro 16-inch" />
-				</div>
-				<div>
-					<FormLabel>Link del producto</FormLabel>
-					<FormInput placeholder="https://ejemplo.com/producto" />
-				</div>
-				<div className="grid grid-cols-2 gap-4">
+	return (
+		<div className="space-y-6">
+			<FormCard title="Adquiere y especifica tu producto">
+				<div className="space-y-4">
 					<div>
-						<FormLabel>Valor Unitario (USD)</FormLabel>
-						<FormInput type="number" placeholder="0.00" />
+						<FormLabel>¿Qué quieres comprar?</FormLabel>
+						<FormInput
+							name="productName"
+							value={formData.productName}
+							onChange={handleChange}
+							placeholder="Ej. Apple MacBook Pro 16-inch"
+							error={errors.productName}
+						/>
 					</div>
 					<div>
-						<FormLabel>Cantidad</FormLabel>
-						<FormInput type="number" defaultValue={1} />
+						<FormLabel>Link del producto</FormLabel>
+						<FormInput
+							name="productLink"
+							value={formData.productLink}
+							onChange={handleChange}
+							placeholder="https://ejemplo.com/producto"
+							error={errors.productLink}
+						/>
 					</div>
+					<div className="grid grid-cols-2 gap-4">
+						<div>
+							<FormLabel>Valor Unitario (USD)</FormLabel>
+							<FormInput
+								name="unitValue"
+								type="number"
+								value={formData.unitValue}
+								onChange={handleChange}
+								placeholder="0.00"
+								error={errors.unitValue}
+							/>
+						</div>
+						<div>
+							<FormLabel>Cantidad</FormLabel>
+							<FormInput
+								name="quantity"
+								type="number"
+								value={formData.quantity}
+								onChange={handleChange}
+								error={errors.quantity}
+							/>
+						</div>
+					</div>
+					<Button variant="outline" className="w-full">
+						<Plus className="h-4 w-4 mr-2" />
+						Agregar otro pedido
+					</Button>
 				</div>
-				<Button variant="outline" className="w-full">
-					<Plus className="h-4 w-4 mr-2" />
-					Agregar otro pedido
-				</Button>
-			</div>
-		</FormCard>
-
-		<InfoBox>
-			<span className="font-bold">ATENCIÓN:</span> NO COMPRES EL PRODUCTO AÚN.
-			SOLO NECESITAMOS EL LINK PARA LA COTIZACIÓN.
-		</InfoBox>
-
-		<div className="flex justify-end">
-			{/* Quitamos bg-red-600 para que use los colores del tema por defecto */}
-			<Button onClick={onNext}>Siguiente</Button>
+			</FormCard>
+			<InfoBox>
+				<span className="font-bold">ATENCIÓN:</span> NO COMPRES EL PRODUCTO AÚN.
+			</InfoBox>
 		</div>
-	</div>
-)
+	)
+}
 
-const Step2 = ({
-	onNext,
-	onBack,
-}: { onNext: () => void; onBack: () => void }) => (
-	<div className="space-y-6">
-		<FormCard title="Información adicional sobre tu paquete">
-			<div className="space-y-6">
-				<div>
-					<p className="font-medium text-foreground mb-2">
-						¿Alguno de los links pesa más de 5 kilos?
-					</p>
-					<div className="flex gap-4">
-						<Button variant="outline">Sí</Button>
-						<Button variant="outline">No</Button>
+const Step2 = ({ formData, setFormData, errors }: StepProps) => {
+	const handleSelect = (field: keyof FormDataState, value: boolean) => {
+		setFormData((prev) => ({ ...prev, [field]: value }))
+	}
+
+	return (
+		<div className="space-y-6">
+			<FormCard title="Información adicional sobre tu paquete">
+				<div className="space-y-6">
+					<div>
+						<p className="font-medium text-foreground mb-2">
+							¿Alguno de los links pesa más de 5 kilos?
+						</p>
+						<div className="flex gap-4">
+							<Button
+								variant={
+									formData.weightOver5kg === true ? 'default' : 'outline'
+								}
+								onClick={() => handleSelect('weightOver5kg', true)}
+							>
+								Sí
+							</Button>
+							<Button
+								variant={
+									formData.weightOver5kg === false ? 'default' : 'outline'
+								}
+								onClick={() => handleSelect('weightOver5kg', false)}
+							>
+								No
+							</Button>
+						</div>
+						{errors.weightOver5kg && (
+							<p className="mt-2 text-sm text-destructive">
+								{errors.weightOver5kg}
+							</p>
+						)}
+					</div>
+					<div>
+						<p className="font-medium text-foreground mb-2">
+							¿Alguno de tus artículos mide más de 50cms en uno de sus lados?
+						</p>
+						<div className="flex gap-4">
+							<Button
+								variant={formData.sizeOver50cm === true ? 'default' : 'outline'}
+								onClick={() => handleSelect('sizeOver50cm', true)}
+							>
+								Sí
+							</Button>
+							<Button
+								variant={
+									formData.sizeOver50cm === false ? 'default' : 'outline'
+								}
+								onClick={() => handleSelect('sizeOver50cm', false)}
+							>
+								No
+							</Button>
+						</div>
+						{errors.sizeOver50cm && (
+							<p className="mt-2 text-sm text-destructive">
+								{errors.sizeOver50cm}
+							</p>
+						)}
 					</div>
 				</div>
-				<div>
-					<p className="font-medium text-foreground mb-2">
-						¿Alguno de tus artículos mide más de 50cms en uno de sus lados?
-					</p>
-					<div className="flex gap-4">
-						<Button variant="outline">Sí</Button>
-						<Button variant="outline">No</Button>
-					</div>
-				</div>
-			</div>
-		</FormCard>
-
-		<FormCard title="¿Cómo te entregamos tu paquete?">
-			<div className="space-y-3">
-				<div className="border border-border rounded-lg p-4 cursor-pointer hover:border-primary">
-					<p className="font-semibold text-foreground">
-						En nuestras oficinas en Quito
-					</p>
-				</div>
-				<div className="border border-border rounded-lg p-4 cursor-pointer hover:border-primary">
-					<p className="font-semibold text-foreground">
-						Por medio de un servicio externo
-					</p>
-					<p className="text-sm text-muted-foreground">
-						(Precio por confirmar dependiendo del destino y peso)
-					</p>
-				</div>
-			</div>
-		</FormCard>
-
-		<div className="flex justify-between">
-			<Button onClick={onBack} variant="ghost">
-				<ArrowLeft className="h-4 w-4 mr-2" />
-				Atrás
-			</Button>
-			<Button onClick={onNext}>Siguiente</Button>
+			</FormCard>
 		</div>
-	</div>
-)
+	)
+}
 
-const Step3 = ({ onBack }: { onBack: () => void }) => (
+const Step3 = () => (
 	<div className="space-y-6">
 		<FormCard title="Couriers disponibles en Quito">
 			<div className="space-y-3">
-				<Button size="lg" className="w-full bg-sky-500 hover:bg-sky-600">
+				<Button size="lg" className="w-full" variant="outline">
 					Selecciona tu viajero de preferencia
 				</Button>
 				<Button size="lg" variant="outline" className="w-full">
@@ -196,74 +228,96 @@ const Step3 = ({ onBack }: { onBack: () => void }) => (
 				</Button>
 			</div>
 		</FormCard>
-
-		<FormCard title="Futuros viajes (15 días desde ahora)">
-			<div className="flex items-center gap-4 border border-border rounded-lg p-4">
-				<Image
-					src="https://i.pravatar.cc/150?u=juanda"
-					alt="Foto del usuario"
-					width={60}
-					height={60}
-					className="rounded-full"
-				/>
-				<div>
-					<p className="font-bold text-lg text-foreground">Juanda Pro</p>
-					<p className="text-sm text-muted-foreground">
-						Fecha de salida: (25/10/2025)
-					</p>
-					<div className="flex text-yellow-500 mt-1">
-						<Star className="h-4 w-4" fill="currentColor" />
-						<Star className="h-4 w-4" fill="currentColor" />
-						<Star className="h-4 w-4" fill="currentColor" />
-						<Star className="h-4 w-4" />
-						<Star className="h-4 w-4" />
-					</div>
-				</div>
-			</div>
-		</FormCard>
-
-		<div className="text-center text-sm text-muted-foreground">
-			<p>
-				<span className="font-bold">Importante:</span> Todas las fechas pueden
-				estar sujetas a variaciones o cambios.
-			</p>
-		</div>
-
-		<div className="flex justify-between">
-			<Button onClick={onBack} variant="ghost">
-				<ArrowLeft className="h-4 w-4 mr-2" />
-				Atrás
-			</Button>
-			<Button>Confirmar Pedido</Button>
-		</div>
 	</div>
 )
 
-// --- PÁGINA PRINCIPAL ---
-// Este componente gestiona el estado del paso actual y renderiza el componente de paso correspondiente.
 export default function CreatePackagePage() {
 	const [step, setStep] = useState(1)
-	const [_formData, _setFormData] = useState(initialFormData)
+	const [formData, setFormData] = useState(initialFormData)
+	const [errors, setErrors] = useState<FormErrors>({})
 
-	const handleNext = () => setStep((prev) => Math.min(prev + 1, 3))
-	const handleBack = () => setStep((prev) => Math.max(prev - 1, 1))
+	const validateStep = () => {
+		const newErrors: FormErrors = {}
 
-	// Esta función decide qué componente de paso mostrar
+		if (step === 1) {
+			if (!formData.productName.trim())
+				newErrors.productName = 'El nombre del producto es obligatorio.'
+			if (!formData.productLink.trim()) {
+				newErrors.productLink = 'El link del producto es obligatorio.'
+			} else {
+				try {
+					new URL(formData.productLink)
+				} catch (_) {
+					newErrors.productLink = 'Por favor, introduce una URL válida.'
+				}
+			}
+			if (!formData.unitValue) newErrors.unitValue = 'El valor es obligatorio.'
+			else if (
+				isNaN(Number(formData.unitValue)) ||
+				Number(formData.unitValue) <= 0
+			)
+				newErrors.unitValue = 'El valor debe ser un número mayor a cero.'
+
+			const quantityNum = Number(formData.quantity)
+			if (!formData.quantity) newErrors.quantity = 'La cantidad es obligatoria.'
+			else if (!Number.isInteger(quantityNum) || quantityNum <= 0)
+				newErrors.quantity = 'Debe ser un número entero mayor a cero.'
+		}
+
+		if (step === 2) {
+			if (formData.weightOver5kg === null)
+				newErrors.weightOver5kg = 'Por favor, selecciona una opción.'
+			if (formData.sizeOver50cm === null)
+				newErrors.sizeOver50cm = 'Por favor, selecciona una opción.'
+		}
+
+		setErrors(newErrors)
+		return Object.keys(newErrors).length === 0
+	}
+
+	const handleNext = () => {
+		if (validateStep()) {
+			setStep((prev) => Math.min(prev + 1, 3))
+		}
+	}
+
+	const handleBack = () => {
+		setErrors({})
+		setStep((prev) => Math.max(prev - 1, 1))
+	}
+
 	const renderStep = () => {
 		switch (step) {
 			case 1:
-				return <Step1 onNext={handleNext} />
+				return (
+					<Step1
+						formData={formData}
+						setFormData={setFormData}
+						errors={errors}
+					/>
+				)
 			case 2:
-				return <Step2 onNext={handleNext} onBack={handleBack} />
+				return (
+					<Step2
+						formData={formData}
+						setFormData={setFormData}
+						errors={errors}
+					/>
+				)
 			case 3:
-				return <Step3 onBack={handleBack} />
+				return <Step3 />
 			default:
-				return <Step1 onNext={handleNext} />
+				return (
+					<Step1
+						formData={formData}
+						setFormData={setFormData}
+						errors={errors}
+					/>
+				)
 		}
 	}
 
 	return (
-		// El contenedor principal ya no tiene fondo, lo hereda del layout.
 		<div className="max-w-2xl mx-auto py-8 px-4">
 			<ProgressBar step={step} />
 			<AnimatePresence mode="wait">
@@ -275,6 +329,22 @@ export default function CreatePackagePage() {
 					transition={{ duration: 0.3 }}
 				>
 					{renderStep()}
+
+					<div className="flex mt-8">
+						{step > 1 && (
+							<Button onClick={handleBack} variant="ghost">
+								<ArrowLeft className="h-4 w-4 mr-2" />
+								Atrás
+							</Button>
+						)}
+						<div className="flex-grow" />
+						{step < 3 && (
+							<Button onClick={handleNext} variant="outline">
+								Siguiente
+							</Button>
+						)}
+						{step === 3 && <Button variant="ghost">Confirmar Pedido</Button>}
+					</div>
 				</motion.div>
 			</AnimatePresence>
 		</div>
