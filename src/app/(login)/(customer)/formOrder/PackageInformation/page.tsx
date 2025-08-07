@@ -2,25 +2,32 @@
 
 import { Button } from '@/components/ui/button'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowLeft, ChevronDown, Info, Plus, Star } from 'lucide-react'
+import { ArrowLeft, ChevronDown, Info, Plus, Star, X } from 'lucide-react'
 import Image from 'next/image'
 import { Dispatch, SetStateAction, useState } from 'react'
 
-const initialFormData = {
-	productName: '',
-	productLink: '',
-	unitValue: '',
-	quantity: '1',
+type Product = {
+	id: number
+	productName: string
+	productLink: string
+	unitValue: string
+	quantity: string
+}
 
+const initialFormData = {
+	products: [
+		{ id: 1, productName: '', productLink: '', unitValue: '', quantity: '1' },
+	] as Product[],
 	weightOver5kg: null as boolean | null,
 	sizeOver50cm: null as boolean | null,
 	deliveryMethod: '',
 }
 
 type FormDataState = typeof initialFormData
-
 type FormErrors = {
-	[key in keyof FormDataState]?: string
+	products?: { [key: number]: Partial<Omit<Product, 'id'>> }
+	weightOver5kg?: string
+	sizeOver50cm?: string
 }
 
 const ProgressBar = ({ step }: { step: number }) => {
@@ -74,7 +81,6 @@ const InfoBox = ({ children }: { children: React.ReactNode }) => (
 		<p className="text-sm">{children}</p>
 	</div>
 )
-
 interface StepProps {
 	formData: FormDataState
 	setFormData: Dispatch<SetStateAction<FormDataState>>
@@ -82,63 +88,119 @@ interface StepProps {
 }
 
 const Step1 = ({ formData, setFormData, errors }: StepProps) => {
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const addProduct = () => {
+		setFormData((prev) => ({
+			...prev,
+			products: [
+				...prev.products,
+				{
+					id: Date.now(),
+					productName: '',
+					productLink: '',
+					unitValue: '',
+					quantity: '1',
+				},
+			],
+		}))
+	}
+
+	const removeProduct = (id: number) => {
+		setFormData((prev) => ({
+			...prev,
+			products: prev.products.filter((p) => p.id !== id),
+		}))
+	}
+
+	const handleProductChange = (
+		id: number,
+		e: React.ChangeEvent<HTMLInputElement>
+	) => {
 		const { name, value } = e.target
-		setFormData((prev) => ({ ...prev, [name]: value }))
+		setFormData((prev) => ({
+			...prev,
+			products: prev.products.map((p) =>
+				p.id === id ? { ...p, [name]: value } : p
+			),
+		}))
 	}
 
 	return (
 		<div className="space-y-6">
-			<FormCard title="Adquiere y especifica tu producto">
-				<div className="space-y-4">
-					<div>
-						<FormLabel>¿Qué quieres comprar?</FormLabel>
-						<FormInput
-							name="productName"
-							value={formData.productName}
-							onChange={handleChange}
-							placeholder="Ej. Apple MacBook Pro 16-inch"
-							error={errors.productName}
-						/>
-					</div>
-					<div>
-						<FormLabel>Link del producto</FormLabel>
-						<FormInput
-							name="productLink"
-							value={formData.productLink}
-							onChange={handleChange}
-							placeholder="https://ejemplo.com/producto"
-							error={errors.productLink}
-						/>
-					</div>
-					<div className="grid grid-cols-2 gap-4">
-						<div>
-							<FormLabel>Valor Unitario (USD)</FormLabel>
-							<FormInput
-								name="unitValue"
-								type="number"
-								value={formData.unitValue}
-								onChange={handleChange}
-								placeholder="0.00"
-								error={errors.unitValue}
-							/>
-						</div>
-						<div>
-							<FormLabel>Cantidad</FormLabel>
-							<FormInput
-								name="quantity"
-								type="number"
-								value={formData.quantity}
-								onChange={handleChange}
-								error={errors.quantity}
-							/>
-						</div>
-					</div>
-					<Button variant="outline" className="w-full">
-						<Plus className="h-4 w-4 mr-2" />
-						Agregar otro pedido
-					</Button>
-				</div>
+			<FormCard title="Adquiere y especifica tus productos">
+				<AnimatePresence>
+					{formData.products.map((product, index) => (
+						<motion.div
+							key={product.id}
+							className="space-y-4 border-b border-border pb-6 mb-6 last:border-b-0 last:pb-0 last:mb-0"
+							initial={{ opacity: 0, height: 0 }}
+							animate={{ opacity: 1, height: 'auto' }}
+							exit={{ opacity: 0, height: 0 }}
+						>
+							<div className="flex justify-between items-center">
+								<h3 className="font-semibold text-lg text-foreground">
+									Producto {index + 1}
+								</h3>
+								{formData.products.length > 1 && (
+									<Button
+										variant="ghost"
+										size="icon"
+										className="h-8 w-8"
+										onClick={() => removeProduct(product.id)}
+									>
+										<X className="h-4 w-4 text-destructive" />
+									</Button>
+								)}
+							</div>
+							<div>
+								<FormLabel>¿Qué quieres comprar?</FormLabel>
+								<FormInput
+									name="productName"
+									value={product.productName}
+									onChange={(e) => handleProductChange(product.id, e)}
+									placeholder="Ej. Apple MacBook Pro 16-inch"
+									error={errors.products?.[index]?.productName}
+								/>
+							</div>
+							<div>
+								<FormLabel>Link del producto</FormLabel>
+								<FormInput
+									name="productLink"
+									value={product.productLink}
+									onChange={(e) => handleProductChange(product.id, e)}
+									placeholder="https://ejemplo.com/producto"
+									error={errors.products?.[index]?.productLink}
+								/>
+							</div>
+							<div className="grid grid-cols-2 gap-4">
+								<div>
+									<FormLabel>Valor Unitario (USD)</FormLabel>
+									<FormInput
+										name="unitValue"
+										type="number"
+										value={product.unitValue}
+										onChange={(e) => handleProductChange(product.id, e)}
+										placeholder="0.00"
+										error={errors.products?.[index]?.unitValue}
+									/>
+								</div>
+								<div>
+									<FormLabel>Cantidad</FormLabel>
+									<FormInput
+										name="quantity"
+										type="number"
+										value={product.quantity}
+										onChange={(e) => handleProductChange(product.id, e)}
+										error={errors.products?.[index]?.quantity}
+									/>
+								</div>
+							</div>
+						</motion.div>
+					))}
+				</AnimatePresence>
+				<Button variant="outline" className="w-full" onClick={addProduct}>
+					<Plus className="h-4 w-4 mr-2" />
+					Agregar otro pedido
+				</Button>
 			</FormCard>
 			<InfoBox>
 				<span className="font-bold">ATENCIÓN:</span> NO COMPRES EL PRODUCTO AÚN.
@@ -162,18 +224,24 @@ const Step2 = ({ formData, setFormData, errors }: StepProps) => {
 						</p>
 						<div className="flex gap-4">
 							<Button
-								variant={
-									formData.weightOver5kg === true ? 'default' : 'outline'
-								}
+								variant={formData.weightOver5kg === true ? 'link' : 'ghost'}
 								onClick={() => handleSelect('weightOver5kg', true)}
+								className={
+									formData.weightOver5kg === true
+										? 'text-primary font-bold bg-amber-950'
+										: 'text-muted-foreground'
+								}
 							>
 								Sí
 							</Button>
 							<Button
-								variant={
-									formData.weightOver5kg === false ? 'default' : 'outline'
-								}
+								variant={formData.weightOver5kg === false ? 'link' : 'ghost'}
 								onClick={() => handleSelect('weightOver5kg', false)}
+								className={
+									formData.weightOver5kg === false
+										? 'text-primary font-bold  bg-amber-950'
+										: 'text-muted-foreground'
+								}
 							>
 								No
 							</Button>
@@ -190,16 +258,24 @@ const Step2 = ({ formData, setFormData, errors }: StepProps) => {
 						</p>
 						<div className="flex gap-4">
 							<Button
-								variant={formData.sizeOver50cm === true ? 'default' : 'outline'}
+								variant={formData.sizeOver50cm === true ? 'link' : 'ghost'}
 								onClick={() => handleSelect('sizeOver50cm', true)}
+								className={
+									formData.sizeOver50cm === true
+										? 'text-primary font-bold  bg-amber-950'
+										: 'text-muted-foreground'
+								}
 							>
 								Sí
 							</Button>
 							<Button
-								variant={
-									formData.sizeOver50cm === false ? 'default' : 'outline'
-								}
+								variant={formData.sizeOver50cm === false ? 'link' : 'ghost'}
 								onClick={() => handleSelect('sizeOver50cm', false)}
+								className={
+									formData.sizeOver50cm === false
+										? 'text-primary font-bold  bg-amber-950'
+										: 'text-muted-foreground'
+								}
 							>
 								No
 							</Button>
@@ -220,7 +296,7 @@ const Step3 = () => (
 	<div className="space-y-6">
 		<FormCard title="Couriers disponibles en Quito">
 			<div className="space-y-3">
-				<Button size="lg" className="w-full" variant="outline">
+				<Button size="lg" className="w-full bg-stone-800 hover:bg-stone-700">
 					Selecciona tu viajero de preferencia
 				</Button>
 				<Button size="lg" variant="outline" className="w-full">
@@ -237,31 +313,42 @@ export default function CreatePackagePage() {
 	const [errors, setErrors] = useState<FormErrors>({})
 
 	const validateStep = () => {
-		const newErrors: FormErrors = {}
+		const newErrors: FormErrors = { products: {} }
 
 		if (step === 1) {
-			if (!formData.productName.trim())
-				newErrors.productName = 'El nombre del producto es obligatorio.'
-			if (!formData.productLink.trim()) {
-				newErrors.productLink = 'El link del producto es obligatorio.'
-			} else {
-				try {
-					new URL(formData.productLink)
-				} catch (_) {
-					newErrors.productLink = 'Por favor, introduce una URL válida.'
+			formData.products.forEach((product, index) => {
+				const productErrors: Partial<Omit<Product, 'id'>> = {}
+				if (!product.productName.trim())
+					productErrors.productName = 'El nombre es obligatorio.'
+				if (!product.productLink.trim()) {
+					productErrors.productLink = 'El link es obligatorio.'
+				} else {
+					try {
+						new URL(product.productLink)
+					} catch (_) {
+						productErrors.productLink = 'URL inválida.'
+					}
 				}
-			}
-			if (!formData.unitValue) newErrors.unitValue = 'El valor es obligatorio.'
-			else if (
-				isNaN(Number(formData.unitValue)) ||
-				Number(formData.unitValue) <= 0
-			)
-				newErrors.unitValue = 'El valor debe ser un número mayor a cero.'
+				if (!product.unitValue)
+					productErrors.unitValue = 'El valor es obligatorio.'
+				else if (
+					isNaN(Number(product.unitValue)) ||
+					Number(product.unitValue) <= 0
+				)
+					productErrors.unitValue = 'Debe ser > 0.'
 
-			const quantityNum = Number(formData.quantity)
-			if (!formData.quantity) newErrors.quantity = 'La cantidad es obligatoria.'
-			else if (!Number.isInteger(quantityNum) || quantityNum <= 0)
-				newErrors.quantity = 'Debe ser un número entero mayor a cero.'
+				const quantityNum = Number(product.quantity)
+				if (!product.quantity) {
+					productErrors.quantity = 'La cantidad es obligatoria.'
+				} else if (!Number.isInteger(quantityNum) || quantityNum <= 0) {
+					productErrors.quantity = 'Debe ser un entero > 0.'
+				}
+
+				if (Object.keys(productErrors).length > 0) {
+					if (!newErrors.products) newErrors.products = {}
+					newErrors.products[index] = productErrors
+				}
+			})
 		}
 
 		if (step === 2) {
@@ -272,7 +359,11 @@ export default function CreatePackagePage() {
 		}
 
 		setErrors(newErrors)
-		return Object.keys(newErrors).length === 0
+		return (
+			(!newErrors.products || Object.keys(newErrors.products).length === 0) &&
+			!newErrors.weightOver5kg &&
+			!newErrors.sizeOver50cm
+		)
 	}
 
 	const handleNext = () => {
@@ -339,7 +430,7 @@ export default function CreatePackagePage() {
 						)}
 						<div className="flex-grow" />
 						{step < 3 && (
-							<Button onClick={handleNext} variant="outline">
+							<Button onClick={handleNext} variant="ghost">
 								Siguiente
 							</Button>
 						)}

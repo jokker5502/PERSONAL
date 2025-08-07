@@ -107,11 +107,11 @@
 
 	/* ======= COLORES DE ACENTO - DARK MODE ======= */
 	/* Color principal para botones y acciones importantes */
-	--primary: #fec16f;
+	--primary: #f0cf77;
 	--primary-foreground: #181818;
 
 	/* Color secundario para elementos menos prominentes */
-	--secondary: rgba(238, 174, 84, 0);
+	--secondary: rgb(230, 229, 227);
 	--secondary-foreground: #fdfcfc;
 
 	/* Colores para elementos sutiles o desenfocados */
@@ -119,7 +119,7 @@
 
 	/* Colores para elementos destacados o interactivos */
 	--accent: #968e8ece;
-	--accent-foreground: #fec16f;
+	--accent-foreground: #f1c489;
 
 	/* Colores para la barra lateral */
 	--sidebar-primary: #ff8e06;
@@ -141,7 +141,7 @@
 	--ring: #8b0414;
 
 	/* ======= COLORES PARA GRÁFICOS - DARK MODE ======= */
-	--chart-1: #fda936;
+	--chart-1: #fdaa36f3;
 	--chart-2: #b90221;
 	--chart-3: #ff8e06;
 	--chart-4: #f2022b;
@@ -156,7 +156,7 @@
 	/* Botón básico secundario */
 	--button-secondary: #181818;
 	--button-secondary-hover: #202020;
-	--button-secondary-text: #ff8e06;
+	--button-secondary-text: #ffffff;
 
 	/* ======= COMPONENTE CATEGORY ======= */
 	--category-default: #343434;
